@@ -11,13 +11,14 @@ import tkinter as tk
 
 # Configuration
 TOTAL_LOOP = 0 
-IMAGE_LEVEL = "./images/image_lvl.PNG"
+IMAGE_LEVEL = "./images/image_lvl_test.PNG"
 IMAGE_JOIN = "./images/image_join_2.PNG"
 IMAGE_OUT_FIGHT = "./images/image_out.PNG"  # Chemin vers l'image à détecter si hors combat
 IMAGE_IN_FIGHT = "./images/image_fight.PNG"  # Chemin vers l'image à détecter si hors combat
 OUT_FIGHT_REGION = (655, 961, 31, 29)  # Zone à surveiller (x, y, largeur, hauteur)
 IN_FIGHT_REGION = (655, 961, 31, 29)  # Zone pour la deuxième image (optionnel, sinon même que OUT_FIGHT_REGION)
-LVL_REGION = (841, 342, 156, 30) # (x, y, largeur, hauteur)
+LVL_REGION = (881, 718, 158, 20) # (x, y, largeur, hauteur)
+LVL_REGION_FALLBACK = (882, 560, 156, 20) # (x, y, largeur, hauteur)
 #JOIN_REGION = (70, 476, 214, 88) # (x, y, largeur, hauteur)
 JOIN_REGION = (8, 492, 36, 39) # (x, y, largeur, hauteur)
 CONFIDENCE = 0.7  # Seuil de confiance pour la détection (0.0 à 1.0)
@@ -535,6 +536,12 @@ def main():
                 perform_level_up_click()
                 time.sleep(CHECK_INTERVAL)
                 continue
+            else:
+                level_detected_fallback = detect_image_in_region(level_template, LVL_REGION_FALLBACK, "Level up fallback", LVL_CONFIDENCE)
+                if level_detected_fallback:
+                    perform_level_up_click()
+                    time.sleep(CHECK_INTERVAL)
+                    continue
             
             # 2. Sinon, vérifier si l'image hors combat est présente
             image_detected = detect_image_in_region(template, OUT_FIGHT_REGION, "Image hors combat")
